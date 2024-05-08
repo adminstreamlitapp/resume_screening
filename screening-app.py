@@ -1,23 +1,11 @@
 import os
-import docx
-from PyPDF2 import PdfReader
 import streamlit as st
 import sys
-from collections.abc import Sequence  # Modified import
-
-sys.path.append('/home/adminuser/venv/lib/python3.11/site-packages')  # Update this path
+import python_docx2txt
+from PyPDF2 import PdfReader
 
 def extract_text_from_docx(file_path):
-    doc = docx.Document(file_path)
-    text = ""
-    for paragraph in doc.paragraphs:
-        text += paragraph.text + "\n"
-    
-    for table in doc.tables:
-        for row in table.rows:
-            for cell in row.cells:
-                text += cell.text + "\n"
-    
+    text = python_docx2txt.process(file_path)
     return text
 
 def extract_text_from_pdf(file_path):
