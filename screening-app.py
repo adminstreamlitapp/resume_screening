@@ -1,13 +1,19 @@
 import os
 import streamlit as st
 import textract
-from PyPDF2 import PdfReader
+import PyPDF2
 
 def extract_text_from_file(file_path):
     text = ""
     if file_path.endswith('.docx') or file_path.endswith('.pdf'):
         try:
-            text = textract.process(file_path).decode("utf-8")
+            if file_path.endswith('.docx'):
+                text = textract.process(file_path).decode("utf-8")
+            elif file_path.endswith('.pdf'):
+                with open(file_path, "rb") as f:
+                    reader = PyPDF2.PdfFileReader(f)
+                    for page in range(reader.getNumPages()):
+                        text += reader.getPage(page).extractText()
         except Exception as e:
             st.error(f"Error extracting text from {file_path}: {e}")
     return text
