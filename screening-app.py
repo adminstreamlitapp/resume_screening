@@ -2,6 +2,9 @@ import os
 import docx
 from PyPDF2 import PdfReader
 import streamlit as st
+import sys
+
+sys.path.append('/mnt/data/myapp/.local/lib/python3.7/site-packages')
 
 def extract_text_from_docx(file_path):
     doc = docx.Document(file_path)
