@@ -1,28 +1,16 @@
 import os
 import streamlit as st
-import sys
-import python_docx2txt
+import textract
 from PyPDF2 import PdfReader
 
-def extract_text_from_docx(file_path):
-    text = python_docx2txt.process(file_path)
-    return text
-
-def extract_text_from_pdf(file_path):
-    text = ""
-    with open(file_path, "rb") as f:
-        reader = PdfReader(f)
-        for page in reader.pages:
-            text += page.extract_text()
-    return text
-
 def extract_text_from_file(file_path):
-    if file_path.endswith('.docx'):
-        return extract_text_from_docx(file_path)
-    elif file_path.endswith('.pdf'):
-        return extract_text_from_pdf(file_path)
-    else:
-        return ""
+    text = ""
+    if file_path.endswith('.docx') or file_path.endswith('.pdf'):
+        try:
+            text = textract.process(file_path).decode("utf-8")
+        except Exception as e:
+            st.error(f"Error extracting text from {file_path}: {e}")
+    return text
 
 def evaluate_resume(resume_text):
     required_skills = {
