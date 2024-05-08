@@ -3,8 +3,9 @@ import docx
 from PyPDF2 import PdfReader
 import streamlit as st
 import sys
+from collections.abc import Sequence  # Modified import
 
-sys.path.append('/mnt/data/myapp/.local/lib/python3.7/site-packages')
+sys.path.append('/home/adminuser/venv/lib/python3.11/site-packages')  # Update this path
 
 def extract_text_from_docx(file_path):
     doc = docx.Document(file_path)
