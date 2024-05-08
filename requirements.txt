@@ -1,2 +1,2 @@
 streamlit
-python-docx2txt==0.9
+textract==1.6.3
