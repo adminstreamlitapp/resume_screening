@@ -54,6 +54,7 @@ resumes_directory = st.text_input("Enter directory containing resumes:")
 
 if st.button("Analyze Resumes"):
     if resumes_directory:
+        resumes_directory = os.path.normpath(resumes_directory)  # Normalize path
         for resume_file_name in os.listdir(resumes_directory):
             if not resume_file_name.startswith('~$'):
                 resume_path = os.path.join(resumes_directory, resume_file_name)
