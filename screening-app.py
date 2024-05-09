@@ -53,8 +53,8 @@ st.title('Resume Analysis')
 resumes_directory = st.text_input("Enter directory containing resumes:")
 
 if st.button("Analyze Resumes"):
-    if resumes_directory:
-        resumes_directory = os.path.normpath(resumes_directory)  # Normalize path
+    resumes_directory = os.path.normpath(resumes_directory)  # Normalize the path
+    if resumes_directory and os.path.exists(resumes_directory):
         for resume_file_name in os.listdir(resumes_directory):
             if not resume_file_name.startswith('~$'):
                 resume_path = os.path.join(resumes_directory, resume_file_name)
@@ -76,4 +76,4 @@ if st.button("Analyze Resumes"):
                     st.write("Match % for Optional Skills:", optional_match_percentage)
                     st.write("-" * 50)
     else:
-        st.warning("Please enter resumes directory")
+        st.warning("Please enter a valid resumes directory")
