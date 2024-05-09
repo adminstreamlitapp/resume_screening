@@ -1,17 +1,14 @@
 import os
 import streamlit as st
+import textract
 import PyPDF2
-from docx import Document
-from collections.abc import Sequence
 
 def extract_text_from_file(file):
     text = ""
     if file.name.endswith('.docx') or file.name.endswith('.pdf'):
         try:
             if file.name.endswith('.docx'):
-                doc = Document(file)
-                for paragraph in doc.paragraphs:
-                    text += paragraph.text
+                text = textract.process(file).decode("utf-8")
             elif file.name.endswith('.pdf'):
                 reader = PyPDF2.PdfFileReader(file)
                 for page in range(reader.getNumPages()):
