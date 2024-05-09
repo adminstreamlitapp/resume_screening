@@ -51,16 +51,20 @@ def evaluate_resume(resume_text):
 
 st.title('Resume Analysis')
 
-# Input field for resumes directory
-resumes_directory_url = st.text_input("Enter URL of the directory containing resumes:")
+# Input field for GitHub repository URL
+repo_url = st.text_input("Enter GitHub repository URL:")
 
 if st.button("Analyze Resumes"):
-    if resumes_directory_url:
-        response = requests.get(resumes_directory_url)
+    if repo_url:
+        # Construct the URL to fetch the files from GitHub
+        api_url = f"{repo_url}/contents/"
+        response = requests.get(api_url)
+        
         if response.status_code == 200:
-            for resume_file_name in response.json():
-                if not resume_file_name.startswith('~$'):
-                    resume_url = os.path.join(resumes_directory_url, resume_file_name)
+            for item in response.json():
+                if item["type"] == "file":
+                    resume_url = item["download_url"]
+                    resume_file_name = item["name"]
                     resume_content = requests.get(resume_url).content
                     resume_file = BytesIO(resume_content)
                     if (resume_file_name.endswith('.docx') or resume_file_name.endswith('.pdf')):
@@ -81,6 +85,6 @@ if st.button("Analyze Resumes"):
                         st.write("Match % for Optional Skills:", optional_match_percentage)
                         st.write("-" * 50)
         else:
-            st.error("Failed to fetch resumes directory. Please check the URL.")
+            st.error("Failed to fetch files from GitHub repository. Please check the URL.")
     else:
-        st.warning("Please enter the URL of the directory containing resumes")
+        st.warning("Please enter the GitHub repository URL")
