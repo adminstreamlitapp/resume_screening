@@ -1,7 +1,7 @@
 import os
 import streamlit as st
-import textract
 import PyPDF2
+from docx import Document
 from collections.abc import Sequence
 
 def extract_text_from_file(file):
