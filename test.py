@@ -5,19 +5,21 @@ import PyPDF2
 import requests
 from io import BytesIO
 
-def extract_text_from_file(file_path):
+def extract_text_from_file(file):
     text = ""
-    if file_path.endswith('.docx') or file_path.endswith('.pdf'):
+    file_content = file.read()
+    if file.name.endswith('.docx'):
         try:
-            if file_path.endswith('.docx'):
-                text = textract.process(file_path).decode("utf-8")
-            elif file_path.endswith('.pdf'):
-                with open(file_path, "rb") as f:
-                    reader = PyPDF2.PdfFileReader(f)
-                    for page in range(reader.getNumPages()):
-                        text += reader.getPage(page).extractText()
+            text = textract.process(BytesIO(file_content)).decode("utf-8")
         except Exception as e:
-            st.error(f"Error extracting text from {file_path}: {e}")
+            st.error(f"Error extracting text from {file.name}: {e}")
+    elif file.name.endswith('.pdf'):
+        try:
+            reader = PyPDF2.PdfFileReader(BytesIO(file_content))
+            for page in range(reader.getNumPages()):
+                text += reader.getPage(page).extractText()
+        except Exception as e:
+            st.error(f"Error extracting text from {file.name}: {e}")
     return text
 
 def evaluate_resume(resume_text):
@@ -57,7 +59,7 @@ repo_url = st.text_input("Enter GitHub repository URL:")
 if st.button("Analyze Resumes"):
     if repo_url:
         # Construct the URL to fetch the files from GitHub
-        api_url = f"{repo_url}"
+        api_url = f"{repo_url}/contents/"
         response = requests.get(api_url)
         
         if response.status_code == 200:
@@ -67,23 +69,22 @@ if st.button("Analyze Resumes"):
                     resume_file_name = item["name"]
                     resume_content = requests.get(resume_url).content
                     resume_file = BytesIO(resume_content)
-                    if (resume_file_name.endswith('.docx') or resume_file_name.endswith('.pdf')):
-                        resume_text = extract_text_from_file(resume_file)
-                        required_skills, optional_skills, required_match_percentage, optional_match_percentage = evaluate_resume(resume_text)
+                    resume_text = extract_text_from_file(resume_file)
+                    required_skills, optional_skills, required_match_percentage, optional_match_percentage = evaluate_resume(resume_text)
 
-                        st.subheader(f"Results for resume: {resume_file_name}")
+                    st.subheader(f"Results for resume: {resume_file_name}")
 
-                        st.subheader("Required skills:")
-                        for skill, present in required_skills.items():
-                            st.write(f"{skill} : {'Yes' if present else 'No'}")
+                    st.subheader("Required skills:")
+                    for skill, present in required_skills.items():
+                        st.write(f"{skill} : {'Yes' if present else 'No'}")
 
-                        st.subheader("Optional Skills:")
-                        for skill, present in optional_skills.items():
-                            st.write(f"{skill} : {'Yes' if present else 'No'}")
+                    st.subheader("Optional Skills:")
+                    for skill, present in optional_skills.items():
+                        st.write(f"{skill} : {'Yes' if present else 'No'}")
 
-                        st.write("Match % for Required skills:", required_match_percentage)
-                        st.write("Match % for Optional Skills:", optional_match_percentage)
-                        st.write("-" * 50)
+                    st.write("Match % for Required skills:", required_match_percentage)
+                    st.write("Match % for Optional Skills:", optional_match_percentage)
+                    st.write("-" * 50)
         else:
             st.error("Failed to fetch files from GitHub repository. Please check the URL.")
     else:
