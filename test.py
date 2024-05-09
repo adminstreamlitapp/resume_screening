@@ -57,7 +57,7 @@ repo_url = st.text_input("Enter GitHub repository URL:")
 if st.button("Analyze Resumes"):
     if repo_url:
         # Construct the URL to fetch the files from GitHub
-        api_url = f"{repo_url}/contents/"
+        api_url = f"{repo_url}"
         response = requests.get(api_url)
         
         if response.status_code == 200:
