@@ -8,7 +8,7 @@ def extract_text_from_file(file):
     if file.name.endswith('.docx') or file.name.endswith('.pdf'):
         try:
             if file.name.endswith('.docx'):
-                text = textract.process(file).decode("utf-8")
+                text = textract.process(file.read()).decode("utf-8")
             elif file.name.endswith('.pdf'):
                 reader = PyPDF2.PdfFileReader(file)
                 for page in range(reader.getNumPages()):
