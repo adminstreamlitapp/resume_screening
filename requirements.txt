@@ -1,3 +1,4 @@
 streamlit
 textract==1.6.3
 PyPDF2==1.26.0
+python-docx==0.8.10
