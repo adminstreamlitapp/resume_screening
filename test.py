@@ -53,7 +53,7 @@ def evaluate_resume(resume_text):
     
     return required_skills, optional_skills, required_match_percentage, optional_match_percentage
 
-st.title('Resume Analysis')
+st.title('GitHub Resume Analysis')
 
 # Input field for GitHub repository URL
 repo_url = st.text_input("Enter GitHub repository URL:")
