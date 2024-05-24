@@ -2,5 +2,6 @@ streamlit
 requests
 textract
 PyPDF2
+docx
 
 
